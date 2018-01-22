@@ -11,12 +11,11 @@ TestApp::TestApp() : Parent(SIZE_FIELD_X + 10, SIZE_FIELD_Y)
 	FlagGetNewFigure = false;
 	countRotate = 0;
 	countDelayIteration = 0;
-
 	/* Initialization field */
 	for(int i = 0; i < SIZE_FIELD_X * SIZE_FIELD_Y; i++)		
 		Field.push_back(0);
 
-	typeFigure = static_cast<TypeFigure>(getRandomNumber());
+	typeFigure = static_cast<TypeFigure>(/*getRandomNumber()*/1);
 	GenereteFigure();
 }
 
@@ -557,12 +556,38 @@ void TestApp::Rotate(int countRotate)
 					for(int i = pointsY.size() - 1; i >= 0 ; i-- )
 					{
 					
-						if(pointsY[i] == SIZE_FIELD_Y - 1 || Field[(pointsY[i]) * SIZE_FIELD_X + pointsX[i]] == 1)
+						if(pointsX[i] == SIZE_FIELD_X - 1)
+						{
+							MoveLeft();
+							break;
+						}
+						
+						if(pointsY[i] == 0)
+						{
+							MoveRight();
+							break;
+						}
+
+						if(Field[(pointsY[i] + 1) * SIZE_FIELD_X + pointsX[i]] == 1)
 						{
 							flagReDraw = false;
 							break;
 						}
 					}
+
+					pointsY.clear();
+					pointsX.clear();
+					for(int i = 0; i < SIZE_FIELD_X; i++)
+					{
+						for(int j = 0; j < SIZE_FIELD_Y; j++)
+						{
+							if(Field[(j) * SIZE_FIELD_X + i] == 2 )
+							{
+								pointsY.push_back(j);
+								pointsX.push_back(i);
+							}
+						}
+					} 
 
 					if(flagReDraw == true )
 					{
@@ -644,7 +669,7 @@ void TestApp::Rotate(int countRotate)
 			{
 				vector<int> pointsY;
 				vector<int> pointsX;
-
+					
 				for(int i = 0; i < SIZE_FIELD_X; i++)
 				{
 					for(int j = 0; j < SIZE_FIELD_Y; j++)
@@ -656,21 +681,60 @@ void TestApp::Rotate(int countRotate)
 						}
 					}
 				} 
+
 				if((pointsX.empty() == false && pointsY.empty() == false) && FlagGetNewFigure == false)
 				{
 					bool flagReDraw = true; 
 					for(int i = 0; i < pointsY.size() ; i++ )
 					{
 					
-						if(pointsY[i] == SIZE_FIELD_Y - 1 || 
-							Field[(pointsY[i] + 2) * SIZE_FIELD_X + pointsX[i]] == 1 || 
-							pointsX[i] - 2 == 0 || 
-							pointsX[i] + 2 == SIZE_FIELD_X )
+						if(pointsX[i] == SIZE_FIELD_X - 1)
+						{
+							MoveLeft();
+							MoveLeft();
+							break;
+						}
+
+						if(pointsX[i] + 1 == SIZE_FIELD_X - 1)
+						{
+							MoveLeft();
+							break;
+						}
+						
+						if(pointsX[i] - 1 == 0)
+						{
+							MoveRight();
+							break;
+						}
+
+						if(pointsX[i] == 0)
+						{
+							MoveRight();
+							MoveRight();
+							break;
+						}
+
+						if(Field[(pointsY[i] + 2) * SIZE_FIELD_X + pointsX[i]] == 1 || pointsY[i] == SIZE_FIELD_Y - 2 || Field[(pointsY[i] + 1) * SIZE_FIELD_X + pointsX[i]] == 1)
 						{
 							flagReDraw = false;
 							break;
 						}
 					}
+					
+					pointsY.clear();
+				    pointsX.clear();
+
+					for(int i = 0; i < SIZE_FIELD_X; i++)
+					{
+						for(int j = 0; j < SIZE_FIELD_Y; j++)
+						{
+							if(Field[(j) * SIZE_FIELD_X + i] == 2 )
+							{
+								pointsY.push_back(j);
+								pointsX.push_back(i);
+							}
+						}
+					} 
 
 					if(flagReDraw == true )
 					{
@@ -747,7 +811,7 @@ void TestApp::Rotate(int countRotate)
 							}
 						}
 
-						/* Clear old figure */
+						/* Clear old figure*/
 						for(int i = 0; i < pointsYClearOld.size(); i++)
 						{
 							Field[(pointsYClearOld[i]) * SIZE_FIELD_X + pointsXClearOld[i]] = 0;
@@ -758,7 +822,7 @@ void TestApp::Rotate(int countRotate)
 							Field[(pointsYNew[i]) * SIZE_FIELD_X + pointsXNew[i]] = 2;
 						}
 					}
-				}
+				} 
 				break;
 			}
 		
@@ -783,16 +847,38 @@ void TestApp::Rotate(int countRotate)
 					bool flagReDraw = true; 
 					for(int i = 0; i < pointsY.size() ; i++ )
 					{
-					
-						if(pointsY[i] == SIZE_FIELD_Y - 1 || 
-							Field[(pointsY[i] + 1) * SIZE_FIELD_X + pointsX[i]] == 1 || 
-							pointsX[i] - 1 == 0 || 
-							pointsX[i] + 1 == SIZE_FIELD_X )
+						if(pointsX[i] == 0)
+						{
+							MoveRight();
+							break;
+						}
+
+						if(pointsX[i] == SIZE_FIELD_X - 1)
+						{
+							MoveLeft();
+							break;
+						}
+
+						if(pointsY[i] == SIZE_FIELD_Y - 1 || Field[(pointsY[i] + 1) * SIZE_FIELD_X + pointsX[i]] == 1)
 						{
 							flagReDraw = false;
 							break;
 						}
 					}
+
+					pointsY.clear();
+					pointsX.clear();
+					for(int i = 0; i < SIZE_FIELD_X; i++)
+					{
+						for(int j = 0; j < SIZE_FIELD_Y; j++)
+						{
+							if(Field[(j) * SIZE_FIELD_X + i] == 2 )
+							{
+								pointsY.push_back(j);
+								pointsX.push_back(i);
+							}
+						}
+					} 
 
 					if(flagReDraw == true )
 					{
@@ -961,15 +1047,37 @@ void TestApp::Rotate(int countRotate)
 					for(int i = 0; i < pointsY.size() ; i++ )
 					{
 					
-						if(pointsY[i] == SIZE_FIELD_Y - 1 || 
-							Field[(pointsY[i] + 1) * SIZE_FIELD_X + pointsX[i]] == 1 || 
-							pointsX[i] - 1 == 0 || 
-							pointsX[i] + 1 == SIZE_FIELD_X )
+						if(pointsX[i] == 0)
+						{
+							MoveRight();
+							break;
+						}
+						if(pointsX[i] == SIZE_FIELD_X - 1)
+						{
+							MoveLeft();
+							break;
+						}
+
+						if(pointsY[i] == SIZE_FIELD_Y - 1 || Field[(pointsY[i] + 1) * SIZE_FIELD_X + pointsX[i]] == 1)
 						{
 							flagReDraw = false;
 							break;
 						}
 					}
+
+					pointsY.clear();
+					pointsX.clear();
+					for(int i = 0; i < SIZE_FIELD_X; i++)
+					{
+						for(int j = 0; j < SIZE_FIELD_Y; j++)
+						{
+							if(Field[(j) * SIZE_FIELD_X + i] == 2 )
+							{
+								pointsY.push_back(j);
+								pointsX.push_back(i);
+							}
+						}
+					} 
 
 					if(flagReDraw == true )
 					{
@@ -1136,14 +1244,35 @@ void TestApp::Rotate(int countRotate)
 					bool flagReDraw = true; 
 					for(int i = 0; i < pointsY.size() ; i++ )
 					{
-					
-						if(pointsY[i] == SIZE_FIELD_Y - 1 || 
-							Field[(pointsY[i] + 1) * SIZE_FIELD_X + pointsX[i]] == 1 || 
-							pointsX[i] - 1 == 0 || 
-							pointsX[i] + 1 == SIZE_FIELD_X )
+						if(pointsX[i] == 0)
+						{
+							MoveRight();
+							break;
+						}
+						if(pointsX[i] == SIZE_FIELD_X - 1)
+						{
+							MoveLeft();
+							break;
+						}
+
+						if(pointsY[i] == SIZE_FIELD_Y - 1 || Field[(pointsY[i] + 1) * SIZE_FIELD_X + pointsX[i]] == 1)
 						{
 							flagReDraw = false;
 							break;
+						}
+					}
+					
+					pointsY.clear();
+					pointsX.clear();
+					for(int i = 0; i < SIZE_FIELD_X; i++)
+					{
+						for(int j = 0; j < SIZE_FIELD_Y; j++)
+						{
+							if(Field[(j) * SIZE_FIELD_X + i] == 2 )
+							{
+								pointsY.push_back(j);
+								pointsX.push_back(i);
+							}
 						}
 					}
 
@@ -1239,7 +1368,17 @@ void TestApp::Rotate(int countRotate)
 					bool flagReDraw = true; 
 					for(int i = 0; i < pointsY.size() ; i++ )
 					{
-					
+						if(pointsX[i] == 0)
+						{
+							MoveRight();
+							break;
+						}
+						if(pointsX[i] == SIZE_FIELD_X - 1)
+						{
+							MoveLeft();
+							break;
+						}
+
 						if(pointsY[i] == SIZE_FIELD_Y - 1 || 
 							Field[(pointsY[i] + 1) * SIZE_FIELD_X + pointsX[i]] == 1 || 
 							pointsX[i] + 1 == 0 || 
@@ -1247,6 +1386,20 @@ void TestApp::Rotate(int countRotate)
 						{
 							flagReDraw = false;
 							break;
+						}
+					}
+
+					pointsY.clear();
+					pointsX.clear();
+					for(int i = 0; i < SIZE_FIELD_X; i++)
+					{
+						for(int j = 0; j < SIZE_FIELD_Y; j++)
+						{
+							if(Field[(j) * SIZE_FIELD_X + i] == 2 )
+							{
+								pointsY.push_back(j);
+								pointsX.push_back(i);
+							}
 						}
 					}
 
